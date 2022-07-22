@@ -46,3 +46,7 @@ void CommandExecutor::createTable(const CommandParser &commandParser, DataBase &
     string primaryKey = commandParser.size() >= 6 ? commandParser.atToken(5) : "";
 //    dataBase.createTable(dbPath, tblName, scheme, colNames, primaryKey);
 }
+
+void CommandExecutor::dropTable(const CommandParser &commandParser, DataBase &dataBase) {
+    dataBase.dropTable(commandParser.atToken(1));
+}
