@@ -34,26 +34,3 @@ size_t CommandParser::getSymbolCountInCommand(char symbol, const std::string &co
     }
     return count;
 }
-
-CommandType CommandParser::getCommandType() const {
-    string cmd = sh::toUpper(commands[0]);
-
-    if (cmd == "CREATETABLE") {
-        return CommandType::CREATE_TABLE;
-    } else if (cmd == "DROPTABLE") {
-        return CommandType::DROP_TABLE;
-    } else if (cmd == "LISTTABLES") {
-        return CommandType::LIST_TABLES;
-    } else if (cmd == "TABLEINFO") {
-        return CommandType::TABLE_INFO;
-    } else if (cmd == "INSERT") {
-        return CommandType::INSERT;
-    } else if (cmd == "REMOVE") {
-        return CommandType::REMOVE;
-    } else if (cmd == "SELECT") {
-        return CommandType::SELECT;
-    } else if (cmd == "EXIT")
-        return CommandType::EXIT;
-
-    //return CommandType::NONE;
-}

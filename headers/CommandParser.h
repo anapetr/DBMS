@@ -3,13 +3,11 @@
 #include <string>
 #include <vector>
 #include "CommandType.h"
-#include "StringHelper.hpp"
 
 using std::cin;
 using std::getline;
 using std::invalid_argument;
 using std::out_of_range;
-using sh = StringHelper;
 using std::string;
 using std::vector;
 
@@ -205,6 +203,6 @@ public:
 private:
     bool fIsDistinct = false;
     string fOrderBy;
-    string fRaw;
+    string fRaw; //why
     vector<string> commands;
 };

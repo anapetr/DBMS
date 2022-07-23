@@ -15,7 +15,7 @@ public:
     static std::unordered_map<std::string, std::string> getNameAndTypesOfColumns(std::string scheme, std::vector<std::string> colNames) {
         std::unordered_map<std::string, std::string> result;
 
-        //remove first and last elements
+        //remove first and last elements ()
         scheme.erase(scheme.begin());
         scheme.pop_back();
 
@@ -30,11 +30,8 @@ public:
 
             result.insert({pair[0], pair[1]});
         }
-
         return result;
     }
 
 };
-
-
 #endif //DBMS_DBUTILS_H
