@@ -88,16 +88,18 @@ BPTreeNode *BPTree::splitNode(BPTreeNode *&cursor, NodeKey &nodeKey) {
     }
     virtualNode.insert(virtualNode.begin() + i, nodeKey);
 
-    cursor->getKeys().clear();
-    cursor->getKeys().reserve((order + 1) / 2);
-    cursor->getKeys().insert(cursor->getKeys().begin(), virtualNode.begin(), virtualNode.begin() + (order + 1) / 2);
+    std::vector<NodeKey> cursorKeys = cursor->getKeys();
+    cursorKeys.clear();
+    cursorKeys.reserve((order + 1) / 2);
+    cursorKeys.insert(cursor->getKeys().begin(), virtualNode.begin(), virtualNode.begin() + (order + 1) / 2);
 
     size_t newLeafKeysSize = order + 1 - (order + 1) / 2;
-    newLeaf->getKeys().reserve(newLeafKeysSize);
-    newLeaf->getKeys().insert(newLeaf->getKeys().begin(), virtualNode.begin() + (order + 1) / 2, virtualNode.end());
+    std::vector<NodeKey> newLeafKeys = newLeaf->getKeys();
+    newLeafKeys.reserve(newLeafKeysSize);
+    newLeafKeys.insert(newLeaf->getKeys().begin(), virtualNode.begin() + (order + 1) / 2, virtualNode.end());
 
-    cursor->getPtr()[cursor->getKeys().size()] = newLeaf;
-    newLeaf->getPtr()[newLeaf->getKeys().size()] = cursor->getPtr()[order];
+    cursor->getPtr()[cursorKeys.size()] = newLeaf;
+    newLeaf->getPtr()[newLeafKeys.size()] = cursor->getPtr()[order];
     cursor->getPtr()[order] = nullptr;
 
     return newLeaf;
