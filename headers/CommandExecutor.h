@@ -1,15 +1,11 @@
-//
-// Created by Ana Petrova on 19.07.22.
-//
-
 #ifndef DBMS_COMMANDEXECUTOR_H
 #define DBMS_COMMANDEXECUTOR_H
 
-#include "CommandParser.h"
-#include "DataBase.h"
-#include "../Utils/DBUtils.h"
+#include "./CommandParser.h"
+#include "./DataBase.h"
+#include "../utils/DBUtils.h"
 
-
+//TODO - we dont need command parser
 class CommandExecutor {
 
 public:

@@ -1,12 +1,10 @@
-//
-// Created by Ana Petrova on 21.07.22.
-//
-
 #ifndef DBMS_STRINGUTILS_H
 #define DBMS_STRINGUTILS_H
 
 #include <vector>
 #include <string>
+#include <iostream>
+#include <cctype>
 
 class StringUtils {
 public:
@@ -38,6 +36,24 @@ public:
         }
         result.push_back(current);
         return result;
+    }
+
+    static std::string toUpper(const std::string& str){
+        std::string result;
+        for (size_t i = 0; i < str.size(); i++){
+            if (str[i] >= 'a' && str[i] <= 'z') {
+                result += (char)(str[i] - 32);
+            } else {
+                result += str[i];
+            }
+        }
+        return result;
+    }
+
+    static std::string stringBetweenTwoCharacters(std::string str, std::string startDelimiter, std::string stopDelimiter) {
+        unsigned first = str.find(startDelimiter);
+        unsigned last = str.find_last_of(stopDelimiter);
+        return str.substr (first + 1,last - 1);
     }
 };
 
