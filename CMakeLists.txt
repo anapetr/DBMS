@@ -5,26 +5,32 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(DBMS main.cpp
         headers/Application.h
-        headers/CommandExecutor.h
+        headers/BPlusTree.h
+        headers/BPlusTreeNode.h
         headers/CommandParser.h
+        headers/CommandType.h
         headers/DataBase.h
+        headers/DBPage.h
+        headers/DBQuery.h
         headers/DBTable.h
-        headers/Constants.h
-        headers/BPTree.h
-        headers/RecordPtr.h
-        headers/BPTreeNode.h
-        headers/TypeWrapper.h
+        headers/IntegerType.h
+        headers/InternalQuery.h
         headers/NodeKey.h
+        headers/Object.h
+        headers/ObjectType.h
+        headers/Record.h
+        headers/RecordPtr.h
+        headers/StringType.h
+        headers/TypeWrapper.h
+        headers/CommandExecutor.h
         implementations/Application.cpp
-        implementations/CommandExecutor.cpp
-        implementations/CommandParser.cpp
-        implementations/DataBase.cpp
-        implementations/DBTable.cpp
-        implementations/BPTree.cpp
-        implementations/RecordPtr.cpp
+        implementations/BPlusTree.cpp
         implementations/BPTreeNode.cpp
+        implementations/CommandParser.cpp
+        implementations/DBQuery.cpp
+        implementations/DBTable.cpp
         implementations/TypeWrapper.cpp
-        implementations/NodeKey.cpp
+        implementations/CommandExecutor.cpp
         utils/DBUtils.h
         utils/FileUtils.h
         utils/StringUtils.h)

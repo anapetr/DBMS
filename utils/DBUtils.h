@@ -5,30 +5,34 @@
 #include <unordered_map>
 #include <vector>
 #include "StringUtils.h"
+#include "../headers/Record.h"
 
 class DBUtils {
 public:
-    //TODO - check why we need colNames
-    static std::unordered_map<std::string, std::string> getNameAndTypesOfColumns(std::string schema/*, std::vector<std::string> colNames*/) {
-        std::unordered_map<std::string, std::string> result;
+    static void heapify(std::vector<Record>& arr, int n, int i, int columnId) {
+        int largest = i;
+        int l = 2 * i + 1;
+        int r = 2 * i + 2;
 
-        //remove first and last elements, which are ()
-        schema.erase(schema.begin());
-        schema.pop_back();
-
-        std::vector<std::string> separated = StringUtils::splitLineByDelimiter(schema, ',');
-
-        for (std::string str: separated) {
-            std::pair<std::string, std::string> nameTypePair;
-            std::vector<std::string> pair = StringUtils::splitLineByDelimiter(str, ':');
-
-            //in case sth does not work
-//            colNames.push_back(tuple[0]);
-
-            result.insert({pair[0], pair[1]});
+        if (l < n && arr[l].getValue(columnId) > arr[largest].getValue(columnId)) {
+            largest = l;
         }
-        return result;
+
+        if (r < n && arr[r].getValue(columnId) > arr[largest].getValue(columnId)) {
+            largest = r;
+        }
     }
 
+    static void heapSort(std::vector<Record>& arr, int columnId) {
+        int n = arr.size();
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(arr, n, i, columnId);
+        }
+
+        for (int i = n - 1; i > 0; i--) {
+            std::swap(arr[0], arr[i]);
+            heapify(arr, i, 0, columnId);
+        }
+    }
 };
 #endif //DBMS_DBUTILS_H

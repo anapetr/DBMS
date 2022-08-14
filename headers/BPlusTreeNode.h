@@ -1,9 +1,5 @@
-//
-// Created by Pavel Petkov on 24.07.22.
-//
-
-#ifndef DBMS_BPTREENODE_H
-#define DBMS_BPTREENODE_H
+#ifndef DBMS_BPLUSTREENODE_H
+#define DBMS_BPLUSTREENODE_H
 
 #include <string>
 #include <vector>
@@ -14,15 +10,15 @@
 /**
  * @brief Node of the B+ tree
  */
-class BPTreeNode {
+class BPlusTreeNode {
 private:
     int order;
     bool leaf;
-    std::vector<NodeKey> keys;
-    std::vector<BPTreeNode*> ptr;
+    std::vector<NodeKey> nodeKeys;
+    std::vector<BPlusTreeNode*> children;
 
 public:
-    BPTreeNode(int order, bool isLeaf);
+    BPlusTreeNode(int order, bool isLeaf);
 
     int keyIndex(const TypeWrapper &key);
 
@@ -34,13 +30,13 @@ public:
 
     void setIsLeaf(bool isLeaf);
 
-    std::vector<NodeKey> &getKeys();
+    std::vector<NodeKey> &getNodeKeys();
 
     void setKeys(const std::vector<NodeKey> &keys);
 
-    std::vector<BPTreeNode *> &getPtr();
+    std::vector<BPlusTreeNode *> &getChildren();
 
-    void setPtr(const std::vector<BPTreeNode *> &ptr);
+    void setPtr(const std::vector<BPlusTreeNode *> &ptr);
 };
 
-#endif //DBMS_BPTREENODE_H
+#endif //DBMS_BPLUSTREENODE_H

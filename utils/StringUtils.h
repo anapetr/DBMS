@@ -8,34 +8,25 @@
 
 class StringUtils {
 public:
-    static std::vector<std::string> splitLineByDelimiter(std::string line, char delimiter) {
-//        char* helper = &line[0];
-//        std::vector<std::string> vector;
-//        while (*helper != '\0') {
-//            std::string builder;
-//            while (*helper != delimiter && *helper != '\0') {
-//                builder.push_back(*helper);
-//                helper++;
-//            }
-//            vector.push_back(builder);
-//            helper++;
-//        }
-//
-//        return vector;
+    static std::vector<std::string> splitLineByDelimiter(std::string line, const std::string& delimeter) {
         std::vector<std::string> result;
-        std::string current = "";
 
-        int length = line.size();
-        for (size_t i = 0; i < length; ++i) {
-            if(line[i] != delimiter) {
-                current+=line[i];
-            } else {
-                result.push_back(current);
-                current = "";
+        int position = 0;
+
+        if (line.find(delimeter) == std::string::npos && !line.empty()) {
+            result.push_back(line);
+            return result;
+        }
+
+        while ((position = line.find(delimeter)) != std::string::npos) {
+            result.push_back(line.substr(0, position));
+            line.erase(0, position + delimeter.length());
+
+            if (line.find(delimeter) == std::string::npos) {
+                result.push_back(line);
+                return result;
             }
         }
-        result.push_back(current);
-        return result;
     }
 
     static std::string toUpper(const std::string& str){
@@ -50,12 +41,68 @@ public:
         return result;
     }
 
-    static std::string stringBetweenTwoCharacters(std::string str, std::string startDelimiter, std::string stopDelimiter) {
-        unsigned first = str.find(startDelimiter);
-        unsigned last = str.find_last_of(stopDelimiter);
-        return str.substr (first + 1,last - 1);
+    static bool isInteger(const std::string& source) {
+        if (source.empty()) {
+            return false;
+        }
+
+        bool isInteger = true;
+        for (int i = 0; i < source.size(); i++) {
+            if (source[0] == '-') {
+                continue;
+            }
+
+            if (!isdigit(source[i])) {
+                isInteger = false;
+            }
+        }
+        return isInteger;
+    }
+
+    static bool isValidString(const std::string& source) {
+        if (source.size() < 2 || source.empty() || source[0] != '"' || source[source.size() - 1] != '"') {
+            return false;
+        }
+        return true;
+    }
+
+    static std::string& trim(std::string& source) {
+        if (source.empty()) {
+            return source;
+        }
+
+        while (source[0] == ' ') {
+            source.erase(source.begin());
+        }
+
+        int end = 0;
+        if(!source.empty()) {
+            end = source.size() - 1;
+        }
+
+        while (source[end] == ' ') {
+            source.erase(source.begin() + end);
+            --end;
+        }
+        return source;
+    }
+
+    static void removeEmptyStringsInVector(std::vector<std::string>& vector) {
+        for (size_t i = 0; i < vector.size(); i++) {
+            if (vector[i].empty()) {
+                vector.erase(vector.begin() + i);
+                i--;
+            }
+        }
+    }
+
+    static bool isCorrectColumnType(const std::string& colType, const std::string& actualInput) {
+        if ((colType == "Integer" || colType == "Int" || colType == "integer" || colType == "int" || colType == "INTEGER" || colType == "INT") && isInteger(actualInput)) {
+            return true;
+        } else if ((colType == "String" || colType == "string" || colType == "STRING") && isValidString(actualInput)) {
+            return true;
+        }
+        return false;
     }
 };
-
-
 #endif //DBMS_STRINGUTILS_H

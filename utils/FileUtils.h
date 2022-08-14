@@ -6,14 +6,14 @@
 
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 class FileUtils {
 public:
-    //TODO - chech if there is other way
-    static void readString(std::ifstream& in, std::string& dest) {
+    static void readString(std::ifstream &in, std::string &dest) {
         size_t size = 0;
-        char* str = nullptr;
-        in.read((char*)&size, sizeof(size));
+        char *str = nullptr;
+        in.read((char *) &size, sizeof(size));
         str = new char[size + 1];
         in.read(str, size);
         str[size] = '\0';
@@ -21,10 +21,14 @@ public:
         delete[] str;
     }
 
-    static void writeString(std::ofstream& out, std::string dest) {
+    static void writeString(std::ofstream &out, std::string dest) {
         size_t size = dest.size();
-        out.write((char*)&size, sizeof(size));
-        out.write((char*)dest.c_str(), size);
+        out.write((char *) &size, sizeof(size));
+        out.write((char *) dest.c_str(), size);
+    }
+
+    static void createFolder(const std::string &pathToFolder) {
+        std::__fs::filesystem::create_directories(pathToFolder);
     }
 };
 

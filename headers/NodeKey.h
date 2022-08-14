@@ -1,7 +1,3 @@
-//
-// Created by Pavel Petkov on 24.07.22.
-//
-
 #ifndef DBMS_NODEKEY_H
 #define DBMS_NODEKEY_H
 
@@ -14,10 +10,12 @@
  * typeWrapper is the actual data
  * recordPtr is where to find it in the files
  */
-class NodeKey {
-public:
+struct NodeKey {
     TypeWrapper typeWrapper;
     RecordPtr recordPtr;
+
+    NodeKey(const TypeWrapper &typeWrapper, const RecordPtr &recordPtr) : typeWrapper(typeWrapper),
+                                                                          recordPtr(recordPtr) {}
 };
 
 

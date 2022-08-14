@@ -1,57 +1,52 @@
-//
-// Created by Pavel Petkov on 24.07.22.
-//
-
-#include "../headers/BPTreeNode.h"
+#include "../headers/BPlusTreeNode.h"
 
 
-int BPTreeNode::keyIndex(const TypeWrapper &key) {
-    for (int i = 0; i < keys.size(); i++) {
-        if (keys[i].typeWrapper == key) {
+int BPlusTreeNode::keyIndex(const TypeWrapper &key) {
+    for (int i = 0; i < nodeKeys.size(); i++) {
+        if (nodeKeys[i].typeWrapper == key) {
             return i;
         }
     }
-
     return -1;
 }
 
-BPTreeNode::BPTreeNode(int order, bool isLeaf) {
+BPlusTreeNode::BPlusTreeNode(int order, bool isLeaf) {
     this->setIsLeaf(isLeaf);
     this->setOrder(order);
 
     for (size_t i = 0; i < order + 1; i++) {
-        ptr.push_back(nullptr);
+        children.push_back(nullptr);
     }
 }
 
-int BPTreeNode::getOrder() const {
+int BPlusTreeNode::getOrder() const {
     return order;
 }
 
-void BPTreeNode::setOrder(int order) {
-    BPTreeNode::order = order;
+void BPlusTreeNode::setOrder(int order) {
+    BPlusTreeNode::order = order;
 }
 
-bool BPTreeNode::isLeaf() const {
+bool BPlusTreeNode::isLeaf() const {
     return leaf;
 }
 
-void BPTreeNode::setIsLeaf(bool isLeaf) {
-    BPTreeNode::leaf = isLeaf;
+void BPlusTreeNode::setIsLeaf(bool isLeaf) {
+    BPlusTreeNode::leaf = isLeaf;
 }
 
-std::vector<NodeKey> &BPTreeNode::getKeys() {
-    return keys;
+std::vector<NodeKey> &BPlusTreeNode::getNodeKeys() {
+    return nodeKeys;
 }
 
-void BPTreeNode::setKeys(const std::vector<NodeKey> &keys) {
-    BPTreeNode::keys = keys;
+void BPlusTreeNode::setKeys(const std::vector<NodeKey> &keys) {
+    BPlusTreeNode::nodeKeys = keys;
 }
 
-std::vector<BPTreeNode *> &BPTreeNode::getPtr() {
-    return ptr;
+std::vector<BPlusTreeNode *> &BPlusTreeNode::getChildren() {
+    return children;
 }
 
-void BPTreeNode::setPtr(const std::vector<BPTreeNode *> &ptr) {
-    BPTreeNode::ptr = ptr;
+void BPlusTreeNode::setPtr(const std::vector<BPlusTreeNode *> &ptr) {
+    BPlusTreeNode::children = ptr;
 }

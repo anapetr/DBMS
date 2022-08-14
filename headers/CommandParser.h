@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -9,16 +10,27 @@
 
 class CommandParser {
 public:
-    void loadAndExecuteCommand(const std::string& command);
+    void loadCommand(const std::string &command);
+
     void splitCommand();
-    size_t getSymbolCountInCommand(char symbol, const std::string& command);
-    std::string getWordAtIndex(std::string text, size_t index, char delimiter);
+
+    int getSymbolCountInCommand(char symbol, const std::string &command);
+
+    const std::string& getWordAtIndex(int index) const;
 
     CommandType getCommandType(std::string command) const;
+
+    void clearCommand();
+
+    int getSizeOfCommands() const;
+
+    std::string getOrderBy() const;
+
+    bool getIsDistinct() const;
+
 private:
     bool isDistinct = false;
     std::string orderBy;
     std::string input;
     std::vector<std::string> commands;
-    //CommandExecutor commandExecutor;
 };

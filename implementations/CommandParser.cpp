@@ -1,8 +1,6 @@
 #include "../headers/CommandParser.h"
-#include "../utils/DBUtils.h"
 
-//TODO - we need the database;
-void CommandParser::loadAndExecuteCommand(const std::string &command) {
+void CommandParser::loadCommand(const std::string &command) {
     if (getSymbolCountInCommand('{', command) != getSymbolCountInCommand('}', command)) {
         throw std::invalid_argument("Invalid command, check the number of curly braces");
     }
@@ -15,86 +13,81 @@ void CommandParser::loadAndExecuteCommand(const std::string &command) {
         throw std::invalid_argument("Invalid command, check the number of quotes");
     }
 
-//    input = command;
+    clearCommand();
+    input = command;
+    splitCommand();
 
-    std::string firstCommand = getWordAtIndex(command, 1, ' ');
-    CommandType commandType = getCommandType(firstCommand);
+    if (input.empty() || commands.empty()) {
+        throw std::invalid_argument("Invalid number of commands");
+    }
 
-    switch (commandType) {
-        case CommandType::CREATE_TABLE:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
-                std::string schema = StringUtils::stringBetweenTwoCharacters(command, "(", ")");
-                std::unordered_map<std::string, std::string> nameTypeOfColumns = DBUtils::getNameAndTypesOfColumns(schema);
+    isDistinct = std::find(commands.begin(), commands.end(), "DISTINCT") != commands.end();
 
-            } catch (...) {
-
+    if (std::find(commands.begin(), commands.end(), "ORDER") != commands.end()) {
+        for (int i = 0; i < commands.size() - 1; i++) {
+            if (commands[i] == "ORDER" && commands[i + 1] == "BY") {
+                orderBy = commands[i + 2];
             }
-        case CommandType::DROP_TABLE:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
+        }
+    }
 
-
-            } catch (...) {
-
+    if (std::find(commands.begin(), commands.end(), "WHERE") != commands.end()) {
+        for (int i = 0; i < commands.size(); i++) {
+            int helperIndex = i;
+            if (commands[i] == "WHERE") {
+                i++;
+                while (i < commands.size() &&
+                       (commands[i] != "ORDER" && commands[i] != "BY" && commands[i] != "DISTINCT")) {
+                    commands[helperIndex] += " " + commands[i];
+                    i++;
+                }
             }
-        case CommandType::LIST_TABLES:
-            try {
+        }
+    }
+}
 
-            } catch (...) {
-
+void CommandParser::splitCommand() {
+    int i = 0;
+    while (input[i]) {
+        if (input[i] == ' ') {
+            while (input[i] == ' ') {
+                i++;
             }
-        case CommandType::TABLE_INFO:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
-
-
-            } catch (...) {
-
+        } else if (input[i] == '{') {
+            int helperIndex = i;
+            while (input[i] != '}') {
+                i++;
             }
-        case CommandType::INSERT:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
-                std::string schema = StringUtils::stringBetweenTwoCharacters(command, "(", ")");
-                std::unordered_map<std::string, std::string> nameTypeOfColumns = DBUtils::getNameAndTypesOfColumns(schema);
-
-            } catch (...) {
-
+            i++;
+            commands.push_back(input.substr(helperIndex, i - helperIndex));
+        } else if (input[i] == '(') {
+            int helperIndex = i;
+            while (input[i] != ')') {
+                i++;
             }
-        case CommandType::REMOVE:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
-                std::string schema = StringUtils::stringBetweenTwoCharacters(command, "(", ")");
-                std::unordered_map<std::string, std::string> nameTypeOfColumns = DBUtils::getNameAndTypesOfColumns(schema);
-
-            } catch (...) {
-
+            i++;
+            commands.push_back(input.substr(helperIndex, i - helperIndex));
+        } else if (input[i] == '"') {
+            int helperIndex = i;
+            while (input[i] != '"') {
+                i++;
             }
-        case CommandType::SELECT:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
-                std::string schema = StringUtils::stringBetweenTwoCharacters(command, "(", ")");
-                std::unordered_map<std::string, std::string> nameTypeOfColumns = DBUtils::getNameAndTypesOfColumns(schema);
-
-            } catch (...) {
-
+            i++;
+            commands.push_back(input.substr(helperIndex, i - helperIndex));
+        } else {
+            int helperIndex = i;
+            while (isalpha(input[i]) || isdigit(input[i]) || input[i] == '*' || input[i] == '>' || input[i] == '<' ||
+                   input[i] == '='
+                   || input[i] == '!' || input[i] == ',' || input[i] == '.') {
+                i++;
             }
-        case CommandType::EXIT:
-            try {
-                std::string tableName = getWordAtIndex(command, 2, ' ');
-                std::string schema = StringUtils::stringBetweenTwoCharacters(command, "(", ")");
-                std::unordered_map<std::string, std::string> nameTypeOfColumns = DBUtils::getNameAndTypesOfColumns(schema);
-
-            } catch (...) {
-
-            }
-        case CommandType::NONE:
-            break;
+            commands.push_back(input.substr(helperIndex, i - helperIndex));
+        }
     }
 }
 
 
-size_t CommandParser::getSymbolCountInCommand(char symbol, const std::string &command) {
+int CommandParser::getSymbolCountInCommand(char symbol, const std::string &command) {
     size_t count = 0;
     for (int i = 0; i < command.size(); i++) {
         if (command[i] == symbol) {
@@ -104,53 +97,51 @@ size_t CommandParser::getSymbolCountInCommand(char symbol, const std::string &co
     return count;
 }
 
-std::string CommandParser::getWordAtIndex(std::string text, size_t index, char delimiter) {
-    size_t currIndex = 1;
-    std::string currWord = "";
-    int size = text.size();
-    for (size_t i = 0; i < size; i++) {
-        if (text[i] == delimiter || i == size - 1) {
-            if (currIndex == index) {
-                return i == size - 1 ? currWord + text[i] : currWord;
-            } else {
-                currWord = "";
-                currIndex++;
-            }
-        } else {
-            currWord += text[i];
-        }
+const std::string &CommandParser::getWordAtIndex(int index) const {
+    if (index >= commands.size()) {
+        throw std::out_of_range("There are not enough arguments.");
     }
 
-    //TODO - throw exeption
+    return commands[index];
 }
 
-CommandType CommandParser::getCommandType(std::string command) const{
+CommandType CommandParser::getCommandType(std::string command) const {
     std::string commandToUpper = StringUtils::toUpper(command);
 
     if (commandToUpper == "CREATETABLE") {
         return CommandType::CREATE_TABLE;
-    }
-    else if (commandToUpper == "DROPTABLE"){
+    } else if (commandToUpper == "DROPTABLE") {
         return CommandType::DROP_TABLE;
-    }
-    else if (commandToUpper == "LISTTABLES"){
+    } else if (commandToUpper == "LISTTABLES") {
         return CommandType::LIST_TABLES;
-    }
-    else if (commandToUpper == "TABLEINFO"){
+    } else if (commandToUpper == "TABLEINFO") {
         return CommandType::TABLE_INFO;
-    }
-    else if (commandToUpper == "INSERT"){
+    } else if (commandToUpper == "INSERT") {
         return CommandType::INSERT;
-    }
-    else if (commandToUpper == "REMOVE"){
+    } else if (commandToUpper == "REMOVE") {
         return CommandType::REMOVE;
-    }
-    else if (commandToUpper == "SELECT"){
+    } else if (commandToUpper == "SELECT") {
         return CommandType::SELECT;
-    }
-    else if (commandToUpper == "EXIT") {
+    } else if (commandToUpper == "EXIT") {
         return CommandType::EXIT;
     }
 
     return CommandType::NONE;
+}
+
+void CommandParser::clearCommand() {
+    commands.clear();
+    input.clear();
+}
+
+int CommandParser::getSizeOfCommands() const {
+    return commands.size();
+}
+
+std::string CommandParser::getOrderBy() const {
+    return orderBy;
+}
+
+bool CommandParser::getIsDistinct() const {
+    return isDistinct;
 }
