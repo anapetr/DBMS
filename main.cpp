@@ -1,11 +1,8 @@
-#include <iostream>
-
-#include "./Utils/StringUtils.h"
-#include <vector>
-#include <string>
-#include <iostream>
+#include "./headers/Application.h"
 
 int main() {
+
+    Application::instance().execute();
 
     return 0;
 }
